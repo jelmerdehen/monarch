@@ -27,6 +27,11 @@ func NewApp(client *Client) *cli.App {
 				Action: client.Arecord,
 			},
 			{
+				Name:   "air",
+				Usage:  "start air service",
+				Action: client.Air,
+			},
+			{
 				Name:   "xidle",
 				Usage:  "test xidle",
 				Action: client.Xidle,

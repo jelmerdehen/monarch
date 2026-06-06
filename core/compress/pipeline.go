@@ -35,6 +35,7 @@ TODO: parse this from config file like
 }
 */
 
+// ffmpeg -t 10 -f x11grab -i :0 -r 30 -video_size 5120x1440 -draw_mouse 0 -vcodec libx265 -vf "monochrome,mpdecimate" -fps_mode vfr -crf 30  /tmp/copy30.mp4
 func init() {
 	Pipelines["x11grab"] = &Pipeline{
 		Service:    "monarch_x11grab",
@@ -42,7 +43,12 @@ func init() {
 		Outdir:     "/data/mon/x11grab_compress",
 		InfileExt:  "mkv",
 		OutfileExt: "mp4",
-		Argv:       []string{"-an"},
+		Argv:       []string{
+      "-an",
+      "-vf", "monochrome,mpdecimate",
+      "-fps_mode", "vfr",
+      "-crf", "30",
+    },
 	}
 	Pipelines["arecord"] = &Pipeline{
 		Service:    "monarch_arecord",
@@ -148,11 +154,13 @@ func (p *Pipeline) Scan() error {
 	}
 
 	for _, fp := range fps {
+    /*
 		// Only run when user was afk for at least one minute
 		err = errIfNotIdleFor(time.Minute)
 		if err != nil {
 			return err
 		}
+    */
 
 		// Check for locks
 		if fp.InLock.IsLocked() {
