@@ -66,6 +66,23 @@ func init() {
 		OutfileExt: "mp4",
 		Argv:       []string{"-an"},
 	}
+	// screencast: re-encode ffmpeg segment chunks from the G4-triggered
+	// recorder. Keep audio (mic+sysmon mix recorded inside the segment).
+	Pipelines["screencast"] = &Pipeline{
+		Service:    "monarch_screencast",
+		Indir:      "/data/mon/screencast",
+		Outdir:     "/data/mon/screencast_compress",
+		InfileExt:  "mkv",
+		OutfileExt: "mp4",
+		Argv: []string{
+			// No explicit -profile/-level: multi-monitor captures
+			// (e.g. 7680x2160) blow past level 5.1 constraints.
+			"-c:v", "libx264", "-preset", "slow", "-crf", "22",
+			"-pix_fmt", "yuv420p",
+			"-c:a", "copy",
+			"-movflags", "+faststart",
+		},
+	}
 }
 
 func (p *Pipeline) VerifyDirAccess() error {

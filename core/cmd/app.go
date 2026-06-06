@@ -41,6 +41,27 @@ func NewApp(client *Client) *cli.App {
 				Usage:  "Compress output",
 				Action: client.Compress,
 			},
+			{
+				Name:  "screencast",
+				Usage: "User-triggered screen recording (G4/G5) with idle and wall-clock guards",
+				Subcommands: []*cli.Command{
+					{
+						Name:   "start",
+						Usage:  "start recording; 15min idle auto-stop, 4h hard cap, 30min segments",
+						Action: client.ScreencastStart,
+					},
+					{
+						Name:   "stop",
+						Usage:  "stop recording",
+						Action: client.ScreencastStop,
+					},
+					{
+						Name:   "status",
+						Usage:  "print recording state",
+						Action: client.ScreencastStatus,
+					},
+				},
+			},
 		},
 	}
 	return &app
