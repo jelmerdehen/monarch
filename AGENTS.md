@@ -10,7 +10,7 @@ disk or CPU.
 
 | Path | Purpose |
 |------|---------|
-| `core/main.go` | Entry point. NOTE: re-runs app on error then exits 0 — action errors are silently swallowed for every subcommand. Pre-existing. |
+| `core/main.go` | Entry point. NOTE: re-runs app on error then exits 0 - action errors are silently swallowed for every subcommand. Pre-existing. |
 | `core/cmd/` | Subcommand actions (`v4l2`, `x11grab`, `arecord`, `air`, `xidle`, `compress`, `screencast`). |
 | `core/compress/` | Pipeline scanner: locks (`.lock`/`.done`), partial-file cleanup, ffmpeg re-encode, raw-deletion on success. |
 | `sd/` | systemd `--user` units. `BIN` is a placeholder; `make install` rewrites it to the absolute binary path. |
@@ -20,14 +20,14 @@ disk or CPU.
 
 ## Subcommands
 
-- `v4l2` / `x11grab` / `arecord` / `air` — long-running capture services
+- `v4l2` / `x11grab` / `arecord` / `air` - long-running capture services
   wrapped in `xidle.Idlemon`: spawn while user is active, kill when idle
   for `IdleOverTimeout`. Output to `/data/mon/<name>/`. Hardcoded paths.
-- `compress [<pipeline>]` — one scan over `Pipelines["<name>"].Indir`.
+- `compress [<pipeline>]` - one scan over `Pipelines["<name>"].Indir`.
   No arg = scan all. Triggered by `monarch_compress.timer` every 30 min.
-- `screencast {start|stop|status}` — user-triggered (G4/G5 in i3).
+- `screencast {start|stop|status}` - user-triggered (G4/G5 in i3).
   Different model from the others; see below.
-- `xidle` — debug helper for the idle library.
+- `xidle` - debug helper for the idle library.
 
 ## screencast (G4/G5)
 
@@ -41,7 +41,7 @@ Supervisor (one Go process per session):
 - ffmpeg `x11grab` + pulse mic + default-sink monitor mix, segmented
   every 30 min via `-f segment -strftime 1`. Finished segments are
   closed on rotation so the compress pipeline can chew them while
-  recording continues — no big stop-time CPU spike.
+  recording continues - no big stop-time CPU spike.
 - 15-min idle stop via `JelmerDeHen/scrnsaver`
   (`XScreenSaverQueryInfo.Idle`).
 - 4-hour wall-clock hard cap, driven by the supervisor (ffmpeg's own
@@ -54,7 +54,7 @@ Supervisor (one Go process per session):
 - `stop` sends SIGTERM → supervisor sends SIGINT to ffmpeg → 30s drain
   → SIGKILL fallback.
 - LED hook (default `~/.local/bin/monarch-led-hook`, override with
-  `MONARCH_LED_HOOK`) fired on start/stop. Reaped in a goroutine —
+  `MONARCH_LED_HOOK`) fired on start/stop. Reaped in a goroutine  - 
   non-blocking, no zombies under the long-lived supervisor.
 
 Env overrides (Go duration strings):
@@ -87,7 +87,7 @@ matching `.done` lock exists in the outdir. Runs on the *next* scan
 after a successful compress.
 
 The `Scan()` previously gated all compression behind a 1-minute idle
-check — currently commented out so compression runs regardless of
+check - currently commented out so compression runs regardless of
 desktop activity.
 
 ## Deploy
@@ -113,7 +113,7 @@ Install locations:
 | systemd units | `~/.config/systemd/user/monarch_*.{service,timer}` |
 | Output dirs | `/data/mon/<pipeline>/` (created on first use by `make install`) |
 
-`MONARCH_LED_HOOK` is set by the i3 wrapper in the dotfiles repo —
+`MONARCH_LED_HOOK` is set by the i3 wrapper in the dotfiles repo  - 
 this repo does **not** install the LED hook itself.
 
 ## Constraints worth knowing
@@ -129,9 +129,9 @@ this repo does **not** install the LED hook itself.
 
 ## Related repos
 
-- `github.com/JelmerDeHen/xidle` — idle-time poller and CmdJob wrapper.
-- `github.com/JelmerDeHen/scrnsaver` — X11 `XScreenSaverQueryInfo` cgo
+- `github.com/JelmerDeHen/xidle` - idle-time poller and CmdJob wrapper.
+- `github.com/JelmerDeHen/scrnsaver` - X11 `XScreenSaverQueryInfo` cgo
   binding.
-- jelmer's dotfiles (private) — `/.../linux/hooks/screencast.sh`
+- jelmer's dotfiles (private) - `/.../linux/hooks/screencast.sh`
   (i3 wrapper) and `/.../linux/hooks/monarch-led-hook.sh` (solaar
   blinker). i3 G4/G5 bindings live there too.
