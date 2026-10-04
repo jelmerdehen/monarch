@@ -28,7 +28,7 @@ $(BIN_SRC):
 	GOWORK=off go build -o $@ ./core/
 
 ##
-## deploy: single command — build, install everything, restart timers.
+## deploy: single command - build, install everything, restart timers.
 ## Idempotent. Safe to re-run after every code change.
 ##
 
@@ -49,6 +49,7 @@ install: install-bin install-units install-dirs
 install-bin: build
 	mkdir -p $(dir $(BIN_DST))
 	install -m 0755 $(BIN_SRC) $(BIN_DST)
+	install -m 0755 $(ROOT_DIR)/scripts/mon_off.sh $(HOME)/.local/bin/mon_off
 
 install-units:
 	mkdir -p $(UNIT_DIR)
@@ -73,7 +74,7 @@ start:
 	done
 
 stop:
-	-systemctl --user stop 'monarch_*'
+	$(ROOT_DIR)/scripts/mon_off.sh
 
 restart: stop start
 
@@ -85,12 +86,13 @@ status:
 ##
 
 uninstall:
-	-systemctl --user stop 'monarch_*'
+	-$(ROOT_DIR)/scripts/mon_off.sh
 	@for u in $(TIMER_UNITS); do \
 		systemctl --user disable monarch_$$u.timer || true; \
 	done
 	-rm -v $(UNIT_DIR)/monarch_*
 	-rm -v $(BIN_DST)
+	-rm -v $(HOME)/.local/bin/mon_off
 	systemctl --user daemon-reload
 
 clean:

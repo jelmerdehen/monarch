@@ -14,6 +14,7 @@ disk or CPU.
 | `core/cmd/` | Subcommand actions (`v4l2`, `x11grab`, `arecord`, `air`, `xidle`, `compress`, `screencast`). |
 | `core/compress/` | Pipeline scanner: locks (`.lock`/`.done`), partial-file cleanup, ffmpeg re-encode, raw-deletion on success. |
 | `sd/` | systemd `--user` units. `BIN` is a placeholder; `make install` rewrites it to the absolute binary path. |
+| `scripts/` | Shell helpers (`mon_off.sh`). |
 | `Makefile` | Build + deploy targets. See "Deploy" below. |
 | `notes/` | Scratch + old shell-script prototypes (`srec.sh`, `v4l2.sh`, etc). Reference only. |
 | `PKGFILE/` | Arch packaging stub. |
@@ -110,6 +111,7 @@ Install locations:
 | Artifact | Location |
 |----------|----------|
 | Binary | `~/.local/bin/monarch` |
+| Helper | `~/.local/bin/mon_off` |
 | systemd units | `~/.config/systemd/user/monarch_*.{service,timer}` |
 | Output dirs | `/data/mon/<pipeline>/` (created on first use by `make install`) |
 
